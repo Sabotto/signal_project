@@ -3,9 +3,11 @@ package data_management;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
+import com.data_management.DataReader;
 import com.data_management.DataStorage;
 import com.data_management.PatientRecord;
 
+import java.io.IOException;
 import java.util.List;
 
 class DataStorageTest {
@@ -14,6 +16,12 @@ class DataStorageTest {
     void testAddAndGetRecords() {
         // TODO Perhaps you can implement a mock data reader to mock the test data?
         // DataReader reader
+        DataReader reader = new DataReader() {
+            @Override
+            public void readData(DataStorage dataStorage) throws IOException {
+                // TODO Auto-generated method stub
+            }
+        };
         DataStorage storage = new DataStorage(reader);
         storage.addPatientData(1, 100.0, "WhiteBloodCells", 1714376789050L);
         storage.addPatientData(1, 200.0, "WhiteBloodCells", 1714376789051L);
