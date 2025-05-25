@@ -19,10 +19,10 @@ class DataStorageTest {
         DataReader reader = new DataReader() {
             @Override
             public void readData(DataStorage dataStorage) throws IOException {
-                // TODO Auto-generated method stub
+                // No-op for this test
             }
         };
-        DataStorage storage = new DataStorage(reader);
+        DataStorage storage = DataStorage.getInstance(reader);
         storage.addPatientData(1, 100.0, "WhiteBloodCells", 1714376789050L);
         storage.addPatientData(1, 200.0, "WhiteBloodCells", 1714376789051L);
 

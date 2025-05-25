@@ -26,25 +26,36 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class HealthDataSimulator {
+    private static HealthDataSimulator instance;
 
     private static int patientCount = 50; // Default number of patients
     private static ScheduledExecutorService scheduler;
     private static OutputStrategy outputStrategy = new ConsoleOutputStrategy(); // Default output strategy
     private static final Random random = new Random();
 
-    public static void main(String[] args) throws IOException {
+    private HealthDataSimulator() {}
 
-        parseArguments(args);
+    public static HealthDataSimulator getInstance() {
+        if (instance == null) {
+            instance = new HealthDataSimulator();
+        }
+        return instance;
+    }
+
+    public static void main(String[] args) throws IOException {
+        HealthDataSimulator simulator = HealthDataSimulator.getInstance();
+
+        simulator.parseArguments(args);
 
         scheduler = Executors.newScheduledThreadPool(patientCount * 4);
 
-        List<Integer> patientIds = initializePatientIds(patientCount);
+        List<Integer> patientIds = simulator.initializePatientIds(patientCount);
         Collections.shuffle(patientIds); // Randomize the order of patient IDs
 
-        scheduleTasksForPatients(patientIds);
+        simulator.scheduleTasksForPatients(patientIds);
     }
 
-    private static void parseArguments(String[] args) throws IOException {
+    private void parseArguments(String[] args) throws IOException {
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
                 case "-h":
@@ -105,7 +116,7 @@ public class HealthDataSimulator {
         }
     }
 
-    private static void printHelp() {
+    private void printHelp() {
         System.out.println("Usage: java HealthDataSimulator [options]");
         System.out.println("Options:");
         System.out.println("  -h                       Show help and exit.");
@@ -122,7 +133,7 @@ public class HealthDataSimulator {
                 "  This command simulates data for 100 patients and sends the output to WebSocket clients connected to port 8080.");
     }
 
-    private static List<Integer> initializePatientIds(int patientCount) {
+    private List<Integer> initializePatientIds(int patientCount) {
         List<Integer> patientIds = new ArrayList<>();
         for (int i = 1; i <= patientCount; i++) {
             patientIds.add(i);
@@ -130,7 +141,7 @@ public class HealthDataSimulator {
         return patientIds;
     }
 
-    private static void scheduleTasksForPatients(List<Integer> patientIds) {
+    private void scheduleTasksForPatients(List<Integer> patientIds) {
         ECGDataGenerator ecgDataGenerator = new ECGDataGenerator(patientCount);
         BloodSaturationDataGenerator bloodSaturationDataGenerator = new BloodSaturationDataGenerator(patientCount);
         BloodPressureDataGenerator bloodPressureDataGenerator = new BloodPressureDataGenerator(patientCount);
@@ -146,7 +157,7 @@ public class HealthDataSimulator {
         }
     }
 
-    private static void scheduleTask(Runnable task, long period, TimeUnit timeUnit) {
+    private void scheduleTask(Runnable task, long period, TimeUnit timeUnit) {
         scheduler.scheduleAtFixedRate(task, random.nextInt(5), period, timeUnit);
     }
 }
