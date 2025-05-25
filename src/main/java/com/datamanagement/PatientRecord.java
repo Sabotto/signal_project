@@ -1,4 +1,4 @@
-;package com.datamanagement;
+package com.datamanagement;
 
 /**
  * Represents a single record of patient data at a specific point in time.
