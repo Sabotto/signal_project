@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.alerts.AlertGenerator;
 
 /**
@@ -14,18 +16,18 @@ import com.alerts.AlertGenerator;
  */
 public class DataStorage {
     private static DataStorage instance;
-    private Map<Integer, Patient> patientMap; // Stores patient objects indexed by their unique patient ID.
+    private Map<Integer, Patient> patientMap = new ConcurrentHashMap(); // Stores patient objects indexed by their unique patient ID.
 
     /**
      * Constructs a new instance of DataStorage, initializing the underlying storage
      * structure.
      */
     private DataStorage() {
-        this.patientMap = new HashMap<>();
+        this.patientMap = new ConcurrentHashMap<>();
     }
 
     private DataStorage(DataReader reader) {
-        this.patientMap = new HashMap<>();
+        this.patientMap = new ConcurrentHashMap<>();
 
     }
 
@@ -58,11 +60,9 @@ public class DataStorage {
      */
     public void addPatientData(int patientId, double measurementValue, String recordType, long timestamp) {
         Patient patient = patientMap.get(patientId);
-        if (patient == null) {
-            patient = new Patient(patientId);
-            patientMap.put(patientId, patient);
+        synchronized (patient) {
+            patient.addRecord(measurementValue, recordType, timestamp);
         }
-        patient.addRecord(measurementValue, recordType, timestamp);
     }
 
     /**
