@@ -60,6 +60,8 @@ java -jar target/cardio_generator-1.0-SNAPSHOT.jar --patient-count 100 --output 
 - `websocket:<port>`: Streams the simulated data to WebSocket clients connected to the specified port.
 - `tcp:<port>`: Streams the simulated data to TCP clients connected to the specified port.
 
+## UML Diagrams
+The alert generation system is created using interfaces of an alert generation system that is then implemented for alerts based on record type. There is a base alert class, an alert generator (evaluator), an alert factory interface (creator), and an alert strategy pattern interface (used for threshold management). These are used to make alert systems for blood pressure, ECG, and blood oxygen records for patients. The strategy's checkAlert() method checks the thresholds for the measurement of the record. If the threshold limit is passed, a new alert is returned (made by the alert factory). This then goes through the AlertGenerator class, which evaluates the data of the alert before triggering it. The Alert class is used to set and get the data, and of course, each record type uses the same system described previously. Subsystems such as the data storage and patient identification are also being used.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
